@@ -3,6 +3,8 @@ package com.mycompany.myapp.repository;
 import com.mycompany.myapp.domain.Etudiant;
 import java.util.List;
 import java.util.Optional;
+
+import com.mycompany.myapp.domain.Groupe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -39,4 +41,7 @@ public interface EtudiantRepository extends JpaRepository<Etudiant, Long> {
     Optional<Etudiant> findOneWithToOneRelationships(@Param("id") Long id);
 
     Optional<Etudiant> findByNumInscription(String numInscription);
+        List<Etudiant> findByGroupe(Groupe groupe);
+
+
 }

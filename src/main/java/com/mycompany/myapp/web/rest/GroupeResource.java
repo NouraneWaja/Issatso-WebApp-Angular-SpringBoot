@@ -1,6 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Etudiant;
 import com.mycompany.myapp.domain.Groupe;
+import com.mycompany.myapp.repository.EtudiantRepository;
 import com.mycompany.myapp.repository.GroupeRepository;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -33,10 +35,14 @@ public class GroupeResource {
     private String applicationName;
 
     private final GroupeRepository groupeRepository;
+    private final EtudiantRepository etudiantRepository;
 
-    public GroupeResource(GroupeRepository groupeRepository) {
+    public GroupeResource(GroupeRepository groupeRepository, EtudiantRepository etudiantRepository) {
         this.groupeRepository = groupeRepository;
+        this.etudiantRepository = etudiantRepository;
     }
+
+
 
     /**
      * {@code POST  /groupes} : Create a new groupe.

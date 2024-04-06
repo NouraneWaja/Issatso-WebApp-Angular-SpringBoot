@@ -1,7 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Etudiant;
+import com.mycompany.myapp.domain.Groupe;
 import com.mycompany.myapp.repository.EtudiantRepository;
+import com.mycompany.myapp.repository.GroupeRepository;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.NumInscriptionAlreadyUsedException;
 import java.net.URI;
@@ -34,18 +36,23 @@ public class EtudiantResource {
     private String applicationName;
 
     private final EtudiantRepository etudiantRepository;
-
-    public EtudiantResource(EtudiantRepository etudiantRepository) {
+private final GroupeRepository groupeRepository;
+    public EtudiantResource(EtudiantRepository etudiantRepository, GroupeRepository groupeRepository) {
         this.etudiantRepository = etudiantRepository;
+        this.groupeRepository = groupeRepository;
+    }
+    @GetMapping("/groupes/{id}/etudiants")
+
+    public ResponseEntity<List<Etudiant>> getStudentsByGroup(@PathVariable Long id) {
+        log.debug("REST request to get Etudiants by Groupe : {}", id);
+        Optional<Groupe> groupe = groupeRepository.findById(id);
+        if (!groupe.isPresent()) {
+            return ResponseEntity.notFound().build();  // Return 404 if the group doesn't exist
+        }
+        List<Etudiant> etudiants = etudiantRepository.findByGroupe(groupe.get());
+        return ResponseEntity.ok(etudiants);
     }
 
-    /**
-     * {@code POST  /etudiants} : Create a new etudiant.
-     *
-     * @param etudiant the etudiant to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new etudiant, or with status {@code 400 (Bad Request)} if the etudiant has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("/etudiants")
     public ResponseEntity<Etudiant> createEtudiant(@RequestBody Etudiant etudiant) throws URISyntaxException {
         log.debug("REST request to save Etudiant : {}", etudiant);
