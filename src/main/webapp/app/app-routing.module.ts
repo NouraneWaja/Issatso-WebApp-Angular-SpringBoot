@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { errorRoute } from './layouts/error/error.route';
 import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 import { Authority } from 'app/config/authority.constants';
-
+import  {ListeComponent}  from 'app/entities/groupe/liste/liste.component';
 import HomeComponent from './home/home.component';
 import NavbarComponent from './layouts/navbar/navbar.component';
 import LoginComponent from './login/login.component';
@@ -25,11 +25,18 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           component: NavbarComponent,
           outlet: 'navbar',
         },
+         {
+                  path: '/groupes/{id}/etudiants',
+                  component: ListeComponent,
+                  outlet: 'navbar',
+                },
         {
           path: 'admin',
           data: {
             authorities: [Authority.ADMIN],
           },
+
+
           canActivate: [UserRouteAccessService],
           loadChildren: () => import('./admin/admin-routing.module'),
         },

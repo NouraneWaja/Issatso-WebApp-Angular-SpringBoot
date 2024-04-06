@@ -51,6 +51,17 @@ public class GroupeResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new groupe, or with status {@code 400 (Bad Request)} if the groupe has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @GetMapping("/groupes/{id}/etudiants")
+
+    public ResponseEntity<List<Etudiant>> getStudentsByGroup(@PathVariable Long id) {
+        log.debug("REST request to get Etudiants by Groupe : {}", id);
+        Optional<Groupe> groupe = groupeRepository.findById(id);
+        if (!groupe.isPresent()) {
+            return ResponseEntity.notFound().build();  // Return 404 if the group doesn't exist
+        }
+        List<Etudiant> etudiants = etudiantRepository.findByGroupe(groupe.get());
+        return ResponseEntity.ok(etudiants);
+    }
     @PostMapping("/groupes")
     public ResponseEntity<Groupe> createGroupe(@RequestBody Groupe groupe) throws URISyntaxException {
         log.debug("REST request to save Groupe : {}", groupe);

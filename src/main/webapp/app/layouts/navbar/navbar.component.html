@@ -150,6 +150,18 @@
                 <span jhiTranslate="global.menu.entities.groupe">Groupe</span>
               </a>
             </li>
+            <li *jhiHasAnyAuthority="[ 'ROLE_ETUDIANT']">
+              <a
+                class="dropdown-item"
+                routerLink="/groupe"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="collapseNavbar()"
+              >
+                <fa-icon icon="plus" [fixedWidth]="true"></fa-icon>
+                <span jhiTranslate="global.menu.entities.groupe">Groupe</span>
+              </a>
+            </li>
             <li *jhiHasAnyAuthority="'ROLE_RESPONSABLE_ADMINISTRATION'">
               <a
                 class="dropdown-item"

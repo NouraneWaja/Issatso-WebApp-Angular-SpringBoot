@@ -1,3 +1,13 @@
-<div>
-  <p>hi</p>
+<div class="container">
+  <h1>List of Students</h1>
+  <div *ngIf="etudiants.length > 0; else noStudents">
+    <ul>
+      <li *ngFor="let etudiant of etudiants">
+        {{ etudiant.nom }} <!-- Replace 'name' with the property you want to display -->
+      </li>
+    </ul>
+  </div>
+  <ng-template #noStudents>
+    <p>No students found.</p>
+  </ng-template>
 </div>

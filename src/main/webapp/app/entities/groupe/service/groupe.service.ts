@@ -6,7 +6,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IGroupe, NewGroupe } from '../groupe.model';
-
+import { IEtudiant } from 'app/entities/etudiant/etudiant.model';
 export type PartialUpdateGroupe = Partial<IGroupe> & Pick<IGroupe, 'id'>;
 
 export type EntityResponseType = HttpResponse<IGroupe>;
@@ -21,7 +21,10 @@ export class GroupeService {
   create(groupe: NewGroupe): Observable<EntityResponseType> {
     return this.http.post<IGroupe>(this.resourceUrl, groupe, { observe: 'response' });
   }
-
+  getStudentsByGroup(groupId: number): Observable<IEtudiant[]> {
+    const url = `${this.resourceUrl}/${groupId}/etudiants`;
+    return this.http.get<IEtudiant[]>(url);
+  }
   update(groupe: IGroupe): Observable<EntityResponseType> {
     return this.http.put<IGroupe>(`${this.resourceUrl}/${this.getGroupeIdentifier(groupe)}`, groupe, { observe: 'response' });
   }

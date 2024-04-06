@@ -25,5 +25,4 @@ export const groupeResolve = (route: ActivatedRouteSnapshot): Observable<null | 
   }
   return of(null);
 };
-
 export default groupeResolve;

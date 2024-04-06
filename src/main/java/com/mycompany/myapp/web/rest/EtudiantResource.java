@@ -41,17 +41,7 @@ private final GroupeRepository groupeRepository;
         this.etudiantRepository = etudiantRepository;
         this.groupeRepository = groupeRepository;
     }
-    @GetMapping("/groupes/{id}/etudiants")
 
-    public ResponseEntity<List<Etudiant>> getStudentsByGroup(@PathVariable Long id) {
-        log.debug("REST request to get Etudiants by Groupe : {}", id);
-        Optional<Groupe> groupe = groupeRepository.findById(id);
-        if (!groupe.isPresent()) {
-            return ResponseEntity.notFound().build();  // Return 404 if the group doesn't exist
-        }
-        List<Etudiant> etudiants = etudiantRepository.findByGroupe(groupe.get());
-        return ResponseEntity.ok(etudiants);
-    }
 
     @PostMapping("/etudiants")
     public ResponseEntity<Etudiant> createEtudiant(@RequestBody Etudiant etudiant) throws URISyntaxException {
