@@ -33,6 +33,7 @@ import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directiv
 })
 export class MatiereComponent implements OnInit {
   matieres?: IMatiere[];
+
   isLoading = false;
 
   predicate = 'id';

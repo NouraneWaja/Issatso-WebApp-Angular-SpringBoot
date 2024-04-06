@@ -97,6 +97,7 @@ export class DemandeEtudiantUpdateComponent implements OnInit {
 
   protected updateForm(demandeEtudiant: IDemandeEtudiant): void {
     this.demandeEtudiant = demandeEtudiant;
+
     this.demandeEtudiantFormService.resetForm(this.editForm, demandeEtudiant);
   }
 }

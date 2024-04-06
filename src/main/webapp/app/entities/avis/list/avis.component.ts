@@ -85,6 +85,9 @@ export class AvisComponent implements OnInit {
       },
     });
   }
+  redirectToOtherPage(): void {
+    this.router.navigate(['/avis/new']);
+  }
 
   navigateToWithComponentValues(): void {
     this.handleNavigation(this.predicate, this.ascending);
