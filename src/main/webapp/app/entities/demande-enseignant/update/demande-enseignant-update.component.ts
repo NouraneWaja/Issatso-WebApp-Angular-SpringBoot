@@ -27,7 +27,6 @@ export class DemandeEnseignantUpdateComponent implements OnInit {
   demandeEnseignant: IDemandeEnseignant | null = null;
   sujetEnsValues = Object.keys(SujetEns);
   statusValues = Object.keys(Status);
-  prop: string = 'echrak';
   editForm: DemandeEnseignantFormGroup = this.demandeEnseignantFormService.createDemandeEnseignantFormGroup();
 
   constructor(

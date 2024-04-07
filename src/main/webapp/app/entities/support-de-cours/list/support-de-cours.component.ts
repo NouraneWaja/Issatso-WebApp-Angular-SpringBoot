@@ -16,6 +16,8 @@ import { SortService } from 'app/shared/sort/sort.service';
 import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 import { IMatiere } from '../../matiere/matiere.model';
 import { MatiereService } from '../../matiere/service/matiere.service';
+import { LoginService } from '../../../login/login.service';
+import { AccountService } from '../../../core/auth/account.service';
 
 @Component({
   standalone: true,
@@ -39,7 +41,7 @@ export class SupportDeCoursComponent implements OnInit {
 
   predicate = 'id';
   ascending = true;
-  idtest: number = 18; // Variable pour stocker l'ID de l'enseignant connecté
+  idtest!: number;
   matieresenseignant: IMatiere[] = [];
 
   constructor(
@@ -48,15 +50,38 @@ export class SupportDeCoursComponent implements OnInit {
     public router: Router,
     protected sortService: SortService,
     protected modalService: NgbModal,
-    protected matiereService: MatiereService
+    protected matiereService: MatiereService,
+    protected loginService: LoginService,
+    protected accountService: AccountService
   ) {}
-
+  login!: String | undefined;
   trackId = (_index: number, item: ISupportDeCours): number => this.supportDeCoursService.getSupportDeCoursIdentifier(item);
 
   ngOnInit(): void {
+    this.load();
+    this.accountService.identity().subscribe(account => (this.login = account?.email));
+    if (this.login !== undefined) {
+      console.log('spcourst' + this.login);
+      this.supportDeCoursService.getIdEnseigantConnecte(this.login).subscribe(
+        (id: number) => {
+          this.idtest = id;
+          this.matiereService.findByEnseignantId(this.idtest).subscribe((matieres: IMatiere[]) => {
+            this.matieresenseignant = matieres;
+          });
+          console.log('spcourst' + this.idtest);
+          this.load();
+        },
+        (error: any) => {
+          console.error("Une erreur s'est produite :", error);
+        }
+      );
+    } else {
+      console.error("Erreur : L'adresse e-mail n'est pas définie.");
+    }
     this.matiereService.findByEnseignantId(this.idtest).subscribe((matieres: IMatiere[]) => {
       this.matieresenseignant = matieres;
     });
+
     this.load();
   }
 
@@ -90,9 +115,6 @@ export class SupportDeCoursComponent implements OnInit {
     this.supportDeCours = this.refineData(dataFromBody, this.matieresenseignant);
   }
 
-  // protected refineData(data: ISupportDeCours[]): ISupportDeCours[] {
-  //   return data.sort(this.sortService.startSort(this.predicate, this.ascending ? 1 : -1));
-  // }
   protected refineData(data: ISupportDeCours[], matieresenseignant: IMatiere[]): ISupportDeCours[] {
     // Obtenez les IDs des matières associées à l'enseignant connecté
     const matiereIds = matieresenseignant.map(matiere => matiere.id);

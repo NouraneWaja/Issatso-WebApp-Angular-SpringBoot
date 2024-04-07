@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
-import { map } from 'rxjs/operators';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 import dayjs from 'dayjs/esm';
 
@@ -31,6 +31,7 @@ export type EntityArrayResponseType = HttpResponse<ISupportDeCours[]>;
 export class SupportDeCoursService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/support-de-cours');
   protected resourceUrl2 = this.applicationConfigService.getEndpointFor('api/matieres');
+  protected resourceUrl3 = this.applicationConfigService.getEndpointFor('api/mail');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -129,9 +130,18 @@ export class SupportDeCoursService {
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
   }
+
   findByEnseignantId(enseignantId: number): Observable<IMatiere[]> {
     return this.http.get<IMatiere[]>(`${this.resourceUrl2}/by-enseignant/${enseignantId}`).pipe(
       map((response: IMatiere[]) => response) // Utilisation de l'opérateur map pour extraire les données du corps de la réponse
+    );
+  }
+
+  getIdEnseigantConnecte(mail: String): Observable<number> {
+    return this.http.get<number>(`${this.resourceUrl3}/${mail}`).pipe(
+      map((id: number) => {
+        return id;
+      })
     );
   }
 }
