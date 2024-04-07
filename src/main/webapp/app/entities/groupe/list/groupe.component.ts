@@ -14,6 +14,9 @@ import { GroupeDeleteDialogComponent } from '../delete/groupe-delete-dialog.comp
 import { SortService } from 'app/shared/sort/sort.service';
 
 import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
+import { AccountService } from '../../../core/auth/account.service';
+import { EtudiantService } from '../../etudiant/service/etudiant.service';
+import { IMatiere } from '../../matiere/matiere.model';
 
 @Component({
   standalone: true,
@@ -34,7 +37,8 @@ import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directiv
 export class GroupeComponent implements OnInit {
   groupes?: IGroupe[];
   isLoading = false;
-
+  login!: String | undefined;
+  idtest!: number;
   predicate = 'id';
   ascending = true;
 
@@ -43,6 +47,8 @@ export class GroupeComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     public router: Router,
     protected sortService: SortService,
+    protected accountService: AccountService,
+    protected etudiantService: EtudiantService,
     protected modalService: NgbModal
   ) {}
 
@@ -50,6 +56,28 @@ export class GroupeComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+    this.accountService.identity().subscribe(account => (this.login = account?.email));
+    if (this.login !== undefined) {
+      console.log('groupecomponent' + this.login);
+      this.etudiantService.getIdEtudiantConnecte(this.login).subscribe(
+        (id: number) => {
+          this.idtest = id;
+          // this.matiereService.findByEnseignantId(this.idtest).subscribe((matieres: IMatiere[]) => {
+          //   this.matieresenseignant = matieres;
+          // });
+          console.log('groupe' + this.idtest);
+          this.load();
+        },
+        (error: any) => {
+          console.error("Une erreur s'est produite :", error);
+        }
+      );
+    } else {
+      console.error("Erreur : L'adresse e-mail n'est pas définie.");
+    }
+    // this.matiereService.findByEnseignantId(this.idtest).subscribe((matieres: IMatiere[]) => {
+    //   this.matieresenseignant = matieres;
+    // });
   }
 
   delete(groupe: IGroupe): void {

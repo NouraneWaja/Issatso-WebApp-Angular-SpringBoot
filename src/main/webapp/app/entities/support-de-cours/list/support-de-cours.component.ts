@@ -51,7 +51,6 @@ export class SupportDeCoursComponent implements OnInit {
     protected sortService: SortService,
     protected modalService: NgbModal,
     protected matiereService: MatiereService,
-    protected loginService: LoginService,
     protected accountService: AccountService
   ) {}
   login!: String | undefined;
