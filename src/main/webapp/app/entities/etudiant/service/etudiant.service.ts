@@ -30,6 +30,7 @@ export type EntityArrayResponseType = HttpResponse<IEtudiant[]>;
 export class EtudiantService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/etudiants');
   protected resourceUrl3 = this.applicationConfigService.getEndpointFor('api/mailetudiant');
+  protected baseUrl = this.applicationConfigService.getEndpointFor('api/listeg');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -130,5 +131,8 @@ export class EtudiantService {
         return id;
       })
     );
+  }
+  getEtudiantsSameGroupe(etudiantId: number): Observable<IEtudiant[]> {
+    return this.http.get<IEtudiant[]>(`${this.baseUrl}/${etudiantId}`);
   }
 }

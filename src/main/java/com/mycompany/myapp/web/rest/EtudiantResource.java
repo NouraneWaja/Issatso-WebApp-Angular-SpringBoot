@@ -219,4 +219,16 @@ public class EtudiantResource {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/idgroupe/{etudiantId}")
+    public ResponseEntity<Long> getGroupeIdByEtudiantId(@PathVariable Long etudiantId) {
+        Long groupeId = etudiantRepository.findGroupIdByEtudiantId(etudiantId);
+        return ResponseEntity.ok(groupeId);
+    }
+
+    @GetMapping("/listeg/{etudiantId}")
+    public ResponseEntity<List<Etudiant>> getEtudiantsSameGroupe(@PathVariable Long etudiantId) {
+        List<Etudiant> etudiantsMemeGroupe = etudiantRepository.findEtudiantsBySameGroupe(etudiantId);
+        return ResponseEntity.ok(etudiantsMemeGroupe);
+    }
 }
