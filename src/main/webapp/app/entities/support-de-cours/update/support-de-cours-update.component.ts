@@ -10,9 +10,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SupportDeCoursFormService, SupportDeCoursFormGroup } from './support-de-cours-form.service';
 import { ISupportDeCours } from '../support-de-cours.model';
 import { SupportDeCoursService } from '../service/support-de-cours.service';
+import { AlertError } from 'app/shared/alert/alert-error.model';
+import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
+import { DataUtils, FileLoadError } from 'app/core/util/data-util.service';
 import { IMatiere } from 'app/entities/matiere/matiere.model';
 import { MatiereService } from 'app/entities/matiere/service/matiere.service';
 import { Filiere } from 'app/entities/enumerations/filiere.model';
+import { AccountService } from '../../../core/auth/account.service';
 
 @Component({
   standalone: true,
@@ -22,18 +26,22 @@ import { Filiere } from 'app/entities/enumerations/filiere.model';
 })
 export class SupportDeCoursUpdateComponent implements OnInit {
   isSaving = false;
+  firstvalue: number = 1;
   supportDeCours: ISupportDeCours | null = null;
   filiereValues = Object.keys(Filiere);
-
   matieresSharedCollection: IMatiere[] = [];
-
+  matieresenseignant: IMatiere[] = [];
   editForm: SupportDeCoursFormGroup = this.supportDeCoursFormService.createSupportDeCoursFormGroup();
-
+  login!: String | undefined;
+  idtest!: number;
   constructor(
+    protected dataUtils: DataUtils,
+    protected eventManager: EventManager,
     protected supportDeCoursService: SupportDeCoursService,
     protected supportDeCoursFormService: SupportDeCoursFormService,
     protected matiereService: MatiereService,
-    protected activatedRoute: ActivatedRoute
+    protected activatedRoute: ActivatedRoute,
+    protected accountService: AccountService
   ) {}
 
   compareMatiere = (o1: IMatiere | null, o2: IMatiere | null): boolean => this.matiereService.compareMatiere(o1, o2);
@@ -46,6 +54,37 @@ export class SupportDeCoursUpdateComponent implements OnInit {
       }
 
       this.loadRelationshipsOptions();
+    });
+    this.accountService.identity().subscribe(account => (this.login = account?.email));
+    if (this.login !== undefined) {
+      this.supportDeCoursService.getIdEnseigantConnecte(this.login).subscribe(
+        (id: number) => {
+          this.idtest = id;
+          this.matiereService.findByEnseignantId(this.idtest).subscribe((matieres: IMatiere[]) => {
+            this.matieresenseignant = matieres;
+          });
+          console.log('spcourst' + this.idtest);
+        },
+        (error: any) => {
+          console.error("Une erreur s'est produite :", error);
+        }
+      );
+    } else {
+      console.error("Erreur : L'adresse e-mail n'est pas définie.");
+    }
+  }
+  byteSize(base64String: string): string {
+    return this.dataUtils.byteSize(base64String);
+  }
+
+  openFile(base64String: string, contentType: string | null | undefined): void {
+    this.dataUtils.openFile(base64String, contentType);
+  }
+
+  setFileData(event: Event, field: string, isImage: boolean): void {
+    this.dataUtils.loadFileToForm(event, this.editForm, field, isImage).subscribe({
+      error: (err: FileLoadError) =>
+        this.eventManager.broadcast(new EventWithContent<AlertError>('issatsoApp.error', { ...err, key: 'error.file.' + err.key })),
     });
   }
 

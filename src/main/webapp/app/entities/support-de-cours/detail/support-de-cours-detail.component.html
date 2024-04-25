@@ -12,10 +12,6 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="global.field.id">ID</span></dt>
-        <dd class="element">
-          <span>{{ supportDeCours.id }}</span>
-        </dd>
         <dt><span jhiTranslate="issatsoApp.supportDeCours.titre">Titre</span></dt>
         <dd class="element">
           <span>{{ supportDeCours.titre }}</span>
@@ -26,7 +22,14 @@
         </dd>
         <dt><span jhiTranslate="issatsoApp.supportDeCours.contenu">Contenu</span></dt>
         <dd class="element">
-          <a [routerLink]="supportDeCours.contenu" target="_blank">Accéder au Support de Cours</a>
+          <div *ngIf="supportDeCours.contenu">
+            <a
+              (click)="openFile(supportDeCours.contenu, supportDeCours.contenuContentType)"
+              jhiTranslate="entity.action.open"
+              STYLE="color: red; font-weight: bold;"
+              >Ouvrir</a
+            >
+          </div>
         </dd>
         <dt><span jhiTranslate="issatsoApp.supportDeCours.dateDepot">Date Depot</span></dt>
         <dd class="element">

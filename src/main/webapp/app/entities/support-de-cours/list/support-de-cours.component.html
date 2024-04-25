@@ -1,3 +1,8 @@
+<ng-container *jhiHasAnyAuthority="'ROLE_ETUDIANT'">
+  <ng-container>
+    {{ redirectToOtherPage() }}
+  </ng-container>
+</ng-container>
 <div>
   <h2 id="page-heading" data-cy="SupportDeCoursHeading">
     <span jhiTranslate="issatsoApp.supportDeCours.home.title" class="titre">SupportDeCours</span>
@@ -33,15 +38,9 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
-          <th scope="col" jhiSortBy="id">
+          <th scope="col" jhiSortBy="contenu">
             <div class="d-flex">
-              <span jhiTranslate="global.field.id">ID</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
-          <th scope="col" jhiSortBy="titre">
-            <div class="d-flex">
-              <span jhiTranslate="issatsoApp.supportDeCours.titre">Titre</span>
+              <span jhiTranslate="issatsoApp.supportDeCours.contenu">Contenu</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -51,12 +50,7 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="contenu">
-            <div class="d-flex">
-              <span jhiTranslate="issatsoApp.supportDeCours.contenu">Contenu</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
+
           <th scope="col" jhiSortBy="dateDepot">
             <div class="d-flex">
               <span jhiTranslate="issatsoApp.supportDeCours.dateDepot">Date Depot</span>
@@ -87,15 +81,15 @@
       <tbody>
         <tr *ngFor="let supportDeCours of supportDeCours; trackBy: trackId" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/support-de-cours', supportDeCours.id, 'view']" style="text-decoration: none; color: red">{{
-              supportDeCours.id
-            }}</a>
+            <a
+              style="text-decoration: none; color: red"
+              *ngIf="supportDeCours.contenu"
+              (click)="openFile(supportDeCours.contenu, supportDeCours.contenuContentType)"
+              >{{ supportDeCours.titre }}</a
+            >
           </td>
-          <td>{{ supportDeCours.titre }}</td>
+
           <td>{{ supportDeCours.description }}</td>
-          <td>
-            <a href="supportDeCours.contenu" target="_blank">Accéder au Support de Cours</a>
-          </td>
           <td>{{ supportDeCours.dateDepot | formatMediumDatetime }}</td>
           <td jhiTranslate="{{ 'issatsoApp.Filiere.' + supportDeCours.filiere }}">{{ supportDeCours.filiere }}</td>
           <td>{{ supportDeCours.niveau }}</td>
@@ -109,7 +103,6 @@
           <td class="text-end">
             <div class="btn-group">
               <button
-                *jhiHasAnyAuthority="'ROLE_ENSEIGNANT'"
                 type="submit"
                 [routerLink]="['/support-de-cours', supportDeCours.id, 'view']"
                 class="btn btn-dark btn-sm"

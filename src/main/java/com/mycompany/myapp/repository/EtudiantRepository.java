@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Etudiant;
+import com.mycompany.myapp.domain.enumeration.Filiere;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -48,4 +49,6 @@ public interface EtudiantRepository extends JpaRepository<Etudiant, Long> {
 
     @Query("SELECT e FROM Etudiant e WHERE e.groupe.id = (SELECT e2.groupe.id FROM Etudiant e2 WHERE e2.id = :etudiantId)")
     List<Etudiant> findEtudiantsBySameGroupe(@Param("etudiantId") Long etudiantId);
+
+    Optional<Etudiant> findByEmail(String email);
 }

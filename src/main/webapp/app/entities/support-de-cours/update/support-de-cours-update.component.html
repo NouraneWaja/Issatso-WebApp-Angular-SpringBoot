@@ -37,7 +37,40 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="issatsoApp.supportDeCours.contenu" for="field_contenu">Contenu</label>
-          <input type="text" class="form-control" name="contenu" id="field_contenu" data-cy="contenu" formControlName="contenu" />
+          <div>
+            <div *ngIf="editForm.get('contenu')!.value" class="form-text text-danger clearfix">
+              <a
+                class="pull-start"
+                (click)="openFile(editForm.get('contenu')!.value!, editForm.get('contenuContentType')!.value!)"
+                jhiTranslate="entity.action.open"
+                STYLE="color: red; font-weight: bold;"
+                >Ouvrir</a
+              ><br />
+            </div>
+            <input
+              type="file"
+              id="file_contenu"
+              data-cy="contenu"
+              (change)="setFileData($event, 'contenu', false)"
+              jhiTranslate="entity.action.addblob"
+            />
+            <button
+              *ngIf="editForm.get('contenu')!.value"
+              type="button"
+              (click)="editForm.patchValue({ contenu: undefined, contenuContentType: undefined })"
+              class="btn btn-secondary btn-xs pull-end"
+            >
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          </div>
+          <input type="hidden" class="form-control" name="contenu" id="field_contenu" data-cy="contenu" formControlName="contenu" />
+          <input
+            type="hidden"
+            class="form-control"
+            name="contenuContentType"
+            id="field_contenuContentType"
+            formControlName="contenuContentType"
+          />
         </div>
 
         <div class="mb-3">
@@ -65,7 +98,19 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="issatsoApp.supportDeCours.niveau" for="field_niveau">Niveau</label>
-          <input type="number" class="form-control" name="niveau" id="field_niveau" data-cy="niveau" formControlName="niveau" />
+          <input
+            type="number"
+            class="form-control"
+            name="niveau"
+            id="field_niveau"
+            data-cy="niveau"
+            formControlName="niveau"
+            min="1"
+            max="3"
+            step="1"
+            value="1"
+            [(ngModel)]="firstvalue"
+          />
         </div>
 
         <div class="mb-3">
@@ -79,7 +124,7 @@
             [compareWith]="compareMatiere"
           >
             <option [ngValue]="null"></option>
-            <option [ngValue]="matiereOption" *ngFor="let matiereOption of matieresSharedCollection">
+            <option [ngValue]="matiereOption" *ngFor="let matiereOption of matieresenseignant">
               {{ matiereOption.matiereName }}
             </option>
           </select>
